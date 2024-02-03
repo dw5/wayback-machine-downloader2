@@ -14,11 +14,11 @@ class WaybackMachineDownloader
 
   include ArchiveAPI
 
-  VERSION = "2.3.1"
+  VERSION = "2.4.0"
 
   attr_accessor :base_url, :exact_url, :directory, :all_timestamps,
     :from_timestamp, :to_timestamp, :only_filter, :exclude_filter, 
-    :all, :maximum_pages, :threads_count
+    :all, :maximum_pages, :threads_count, :delay
 
   def initialize params
     @base_url = params[:base_url]
@@ -30,8 +30,11 @@ class WaybackMachineDownloader
     @only_filter = params[:only_filter]
     @exclude_filter = params[:exclude_filter]
     @all = params[:all]
+    # maximum page default is 100
     @maximum_pages = params[:maximum_pages] ? params[:maximum_pages].to_i : 100
     @threads_count = params[:threads_count].to_i
+    # default delay is 4 seconds
+    @delay = params[:delay] ? params[:delay].to_i : 4
   end
 
   def backup_name
@@ -90,6 +93,8 @@ class WaybackMachineDownloader
     unless @exact_url
       @maximum_pages.times do |page_index|
         snapshot_list = get_raw_list_from_api(@base_url + '/*', page_index)
+        # wait before fetching individual snapshots
+        sleep(@delay)
         break if snapshot_list.empty?
         snapshot_list_to_consider += snapshot_list
         print "."
@@ -209,6 +214,8 @@ class WaybackMachineDownloader
       threads << Thread.new do
         until file_queue.empty?
           file_remote_info = file_queue.pop(true) rescue nil
+            # wait before fetching individual snapshots
+            sleep(@delay)
           download_file(file_remote_info) if file_remote_info
         end
       end
@@ -289,6 +296,8 @@ class WaybackMachineDownloader
           puts "#{file_path} was empty and was removed."
         end
       end
+      # Add a 3-second sleep after the download and before the semaphore logic
+      # sleep(3)
       semaphore.synchronize do
         @processed_file_count += 1
         puts "#{file_url} -> #{file_path} (#{@processed_file_count}/#{file_list_by_timestamp.size})"

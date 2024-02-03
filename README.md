@@ -1,18 +1,26 @@
-# Wayback Machine Downloader
+# Wayback Machine Downloader 2.4.0
 
+<!--
 [![Gem Version](https://badge.fury.io/rb/wayback_machine_downloader.svg)](https://rubygems.org/gems/wayback_machine_downloader/)
 [![Build Status](https://travis-ci.org/hartator/wayback-machine-downloader.svg?branch=master)](https://travis-ci.org/hartator/wayback-machine-downloader)
+-->
 
 Download an entire website from the Internet Archive Wayback Machine.
 
-## Installation
+## Installation via GEM
 
-You need to install Ruby on your system (>= 1.9.2) - if you don't already have it.
+You need to install Ruby on your system (>= 1.9.2) [sudo apt install ruby-rubygems or sudo pacman -Syu rubygems] - if you don't already have it.
 Then run:
-
-    gem install wayback_machine_downloader
+<pre><code><del>gem install wayback_machine_downloader</del>
+<del>or sudo gem install wayback_machine_downloader</del>
+</code></pre>
 
 **Tip:** If you run into permission errors, you might have to add `sudo` in front of this command.
+
+## Installation from source
+    git clone https://github.com/dw5/wayback-machine-downloader2
+    gem build wayback_machine_downloader.gemspec
+    gem install [resulting_filename].gem
 
 ## Basic Usage
 
